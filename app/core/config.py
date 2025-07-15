@@ -7,7 +7,7 @@ class Settings(BaseSettings):
     DATABASE_NAME: str = None
     DATABASE_USER: str = None
     DATABASE_PASSWORD: str = None
-    SECRET_KEY: str 
+    SECRET_KEY: str
     ALGORITHM: str = "HS256"
 
     @property
