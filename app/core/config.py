@@ -1,12 +1,13 @@
+from typing import Optional
 from pydantic_settings import BaseSettings
 
 class Settings(BaseSettings):
-    DATABASE_URL: str = None
-    DATABASE_HOST: str = None
-    DATABASE_PORT: str = None
-    DATABASE_NAME: str = None
-    DATABASE_USER: str = None
-    DATABASE_PASSWORD: str = None
+    DATABASE_URL: Optional[str] = None
+    DATABASE_HOST: Optional[str] = None
+    DATABASE_PORT: Optional[str] = None
+    DATABASE_NAME: Optional[str] = None
+    DATABASE_USER: Optional[str] = None
+    DATABASE_PASSWORD: Optional[str] = None
     SECRET_KEY: str
     ALGORITHM: str = "HS256"
 
