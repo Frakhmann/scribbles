@@ -12,3 +12,4 @@ aiofiles
 gunicorn
 requests
 pydantic-settings
+email-validator
