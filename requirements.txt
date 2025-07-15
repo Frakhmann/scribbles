@@ -11,3 +11,4 @@ jinja2
 aiofiles
 gunicorn
 requests
+pydantic-settings
