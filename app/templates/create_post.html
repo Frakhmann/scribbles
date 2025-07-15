@@ -1,0 +1,242 @@
+{% extends "base.html" %}
+
+{% block title %}New Post — Scribbles{% endblock %}
+
+{% block header %}
+<div class="grid grid-cols-3 items-center w-full max-w-[430px] mx-auto px-1 pt-5 pb-2 mb-3 relative">
+  <div>
+    <button id="back-button" type="button"
+      class="text-2xl text-[#151316] hover:bg-[#edecee] rounded-full p-1 transition">
+      <i class="bi bi-x-lg"></i>
+    </button>
+  </div>
+  <h2 class="text-lg font-bold text-[#151316] text-center select-none">New Post</h2>
+  <div></div>
+</div>
+{% endblock %}
+
+{% block content %}
+<style>
+  body {
+    font-family: 'Manrope', 'Noto Sans', sans-serif;
+    background: linear-gradient(120deg, #796380 0%, #b3c4bd 100%);
+  }
+
+  .create-form-block {
+    background: rgba(255, 255, 255, 0.94);
+    border-radius: 1.25rem;
+    box-shadow: 0 3px 22px #c4b3b433;
+    padding: 2rem 1rem 1.7rem 1rem;
+    max-width: 430px;
+    margin: 0 10px 34px 10px;
+  }
+
+  .form-title {
+    font-size: 1.13rem;
+    font-weight: 700;
+    color: #151316;
+    margin-bottom: 0.8rem;
+    margin-top: 0.6rem;
+    letter-spacing: -0.02em;
+  }
+
+  .form-input,
+  .form-textarea,
+  .form-select {
+    background: #EDECEE;
+    border: none;
+    border-radius: 1.07rem;
+    font-size: 1.05rem;
+    color: #151316;
+    padding: 0.9rem 1.15rem;
+    margin-bottom: 15px;
+    width: 100%;
+    transition: box-shadow 0.22s, outline 0.18s;
+    outline: none;
+    box-shadow: 0 1px 7px #c4b3b422;
+  }
+
+  .form-input:focus,
+  .form-textarea:focus,
+  .form-select:focus {
+    box-shadow: 0 0 0 2.3px #b3c4bd;
+    background: #fff;
+  }
+
+  .form-textarea {
+    min-height: 105px;
+    resize: vertical;
+    margin-bottom: 15px;
+  }
+
+  .form-select:disabled {
+    opacity: 0.66;
+    background: #f3f2f7;
+    cursor: not-allowed;
+  }
+
+  .media-blocks {
+    display: flex;
+    gap: 1.2rem;
+    margin-bottom: 12px;
+  }
+
+  .media-label {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 64px;
+    cursor: pointer;
+  }
+
+  .media-btn {
+    width: 48px;
+    height: 48px;
+    border-radius: 0.97rem;
+    background: #edecee;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.18s;
+    font-size: 1.44rem;
+    color: #795e87;
+    margin-bottom: 0.32rem;
+  }
+
+  .media-label:hover .media-btn {
+    background: #c4b3b4;
+  }
+
+  .media-text {
+    font-size: 0.93rem;
+    color: #796380;
+    font-weight: 500;
+  }
+
+  .post-submit-btn {
+    width: 100%;
+    height: 2.95rem;
+    border-radius: 1.07rem;
+    background: linear-gradient(90deg, #796380 60%, #a78d94 100%);
+    color: #fff;
+    font-weight: 600;
+    font-size: 1.1rem;
+    box-shadow: 0 2px 22px #c4b3b475;
+    border: none;
+    outline: none;
+    margin-top: 18px;
+    transition: background 0.32s, box-shadow 0.32s, transform 0.13s;
+    cursor: pointer;
+  }
+
+  .post-submit-btn:hover {
+    background: linear-gradient(90deg, #a78d94 40%, #796380 100%);
+    box-shadow: 0 4px 22px #a78d9475;
+    transform: scale(1.01);
+  }
+
+  @media (max-width: 600px) {
+    .create-form-block {
+      padding: 1.15rem -2rem 1.4rem 0.15rem;
+    }
+
+    .media-blocks {
+      gap: 0.65rem;
+    }
+
+    .media-label {
+      width: 44px;
+    }
+
+    .media-btn {
+      width: 36px;
+      height: 36px;
+    }
+  }
+</style>
+<div class="create-form-block">
+  <form id="post-form" action="/posts/create" method="post" enctype="application/x-www-form-urlencoded"
+    class="flex flex-col w-full">
+    <input type="text" name="title" placeholder="Title" class="form-input" required />
+
+    <textarea name="content" placeholder="What's on your mind?" class="form-textarea" required></textarea>
+
+    <select id="university" name="university_id" class="form-select" required>
+      <option value="">Select University</option>
+      {% for uni in universities %}
+      <option value="{{ uni.id }}">{{ uni.name }}</option>
+      {% endfor %}
+    </select>
+
+    <select id="section" name="section_id" class="form-select" disabled required>
+      <option value="">Select section</option>
+    </select>
+
+    <input type="hidden" name="token" value="{{ request.cookies.get('access_token') }}">
+
+    <div class="form-title">Add to your post</div>
+    <div class="media-blocks">
+      <!-- Image -->
+      <label class="media-label">
+        <div class="media-btn">
+          <i class="bi bi-image"></i>
+        </div>
+        <span class="media-text">Image</span>
+        <input type="file" name="image" accept="image/*" class="hidden" />
+      </label>
+      <!-- Video -->
+      <label class="media-label">
+        <div class="media-btn">
+          <i class="bi bi-camera-reels"></i>
+        </div>
+        <span class="media-text">Video</span>
+        <input type="file" name="video" accept="video/*" class="hidden" />
+      </label>
+      <!-- File -->
+      <label class="media-label">
+        <div class="media-btn">
+          <i class="bi bi-file-earmark"></i>
+        </div>
+        <span class="media-text">File</span>
+        <input type="file" name="file" class="hidden" />
+      </label>
+    </div>
+    <button type="submit" class="post-submit-btn">Post</button>
+  </form>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  document.getElementById("back-button").addEventListener("click", function () {
+    if (window.history.length > 1 && document.referrer && document.referrer !== location.href) {
+      window.history.back();
+    } else {
+      window.location.href = "/";
+    }
+  });
+
+  const universitySelect = document.getElementById("university");
+  const sectionSelect = document.getElementById("section");
+  const sectionsByUniversity = {{ sections_by_university | tojson }};
+
+  universitySelect.addEventListener("change", function () {
+    const universityId = this.value;
+    const sections = sectionsByUniversity[universityId] || [];
+    sectionSelect.innerHTML = '<option value="">Select section</option>';
+    sections.forEach(section => {
+      const option = document.createElement("option");
+      option.value = section.id;
+      option.textContent = section.name;
+      sectionSelect.appendChild(option);
+    });
+    sectionSelect.disabled = sections.length === 0;
+  });
+
+  window.addEventListener("pageshow", function (event) {
+    if (event.persisted) {
+      window.location.reload();
+    }
+  });
+</script>
+{% endblock %}

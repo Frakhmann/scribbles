@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+
+{% block title %}Главная — Scribbles{% endblock %}
+
+{% block content %}
+{% for post in posts %}
+<div class="p-1 @container">
+  <div
+    class="flex flex-col items-stretch justify-start rounded-lg overflow-hidden bg-white dark:bg-gray-900 shadow-sm border border-gray-200 dark:border-gray-700 @xl:flex-row @xl:items-start">
+
+    {% if post.media_url and "http" in post.media_url %}
+    <a href="/posts/{{ post.id }}" class="block w-full aspect-video bg-center bg-no-repeat bg-cover @xl:w-[45%]"
+      style="background-image: url('{{ post.media_url | e }}');"></a>
+    {% endif %}
+
+    <div class="flex w-full min-w-72 grow flex-col items-stretch justify-center gap-1 py-2 px-2 @xl:px-1">
+      <!-- Кликабельный заголовок -->
+      <a href="/posts/{{ post.id }}"
+        class="text-[#151316] dark:text-white text-lg font-bold leading-tight tracking-[-0.015em] hover:text-primary">
+        {{ post.title }}
+      </a>
+      <div class="flex items-end gap-3 justify-between">
+        <div class="flex flex-col gap-1">
+          <!-- Кликабельный текст -->
+          <a href="/posts/{{ post.id }}"
+            class="block text-[#756c7a] dark:text-gray-300 text-base font-normal leading-normal hover:text-primary">
+            {{ post.content[:100] }}{% if post.content|length > 100 %}...{% endif %}
+          </a>
+          <p class="text-[#756c7a] dark:text-gray-400 text-sm font-normal leading-normal">
+            {{ post.created_at.strftime('%-d %b') }}
+          </p>
+        </div>
+        <div class="flex flex-row gap-4 text-gray-500 dark:text-gray-400 text-sm">
+          <button class="like-btn flex items-center gap-1" data-post-id="{{ post.id }}">
+            <i id="like-icon-{{ post.id }}"
+              class="bi {% if post.liked_by_me %}bi-heart-fill{% else %}bi-heart{% endif %}"></i>
+            <span id="like-count-{{ post.id }}">{{ post.likes_count }}</span>
+          </button>
+          <!-- Кликабельные комментарии -->
+          <a href="/posts/{{ post.id }}" class="flex items-center gap-1 hover:text-primary">
+            <i class="bi bi-chat"></i> {{ post.comments|length if post.comments else 0 }}
+          </a>
+          <a href="#" class="hover:underline"><i class="bi bi-flag"></i></a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endfor %}
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const likeButtons = document.querySelectorAll(".like-btn");
+
+    likeButtons.forEach(button => {
+      button.addEventListener("click", async () => {
+        const postId = button.getAttribute("data-post-id");
+        const countSpan = document.getElementById(`like-count-${postId}`);
+        const icon = document.getElementById(`like-icon-${postId}`);
+
+        const response = await fetch("/likes/", {
+          method: "POST",
+          headers: {
+            "Authorization": `Bearer ${localStorage.getItem("access_token")}`,
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ post_id: parseInt(postId) })
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          countSpan.textContent = data.likes_count;
+
+          if (data.liked) {
+            icon.classList.remove("bi-heart");
+            icon.classList.add("bi-heart-fill");
+          } else {
+            icon.classList.remove("bi-heart-fill");
+            icon.classList.add("bi-heart");
+          }
+        } else {
+          console.error("Ошибка при отправке лайка");
+        }
+      });
+    });
+  });
+
+  // Автоматически перезагружать ленту при возврате назад (из кэша)
+  // Проверка авторизации
+  fetch("/auth/check", { credentials: "include" })
+    .then(r => {
+      if (r.status === 401) window.location.replace("/auth/login");
+    });
+
+  // После возврата назад из кэша — обновить страницу!
+  window.addEventListener("pageshow", function (event) {
+    if (event.persisted) {
+      window.location.reload();
+    } else {
+      // Повторно проверяем авторизацию (на всякий случай)
+      fetch("/auth/check", { credentials: "include" })
+        .then(r => {
+          if (r.status === 401) window.location.replace("/auth/login");
+        });
+    }
+  });
+
+</script>
+
+{% endblock %}

@@ -1,0 +1,187 @@
+{% extends "base.html" %}
+
+{% block title %}Universities — Scribbles{% endblock %}
+{% block header %}{% endblock %}
+{% block content %}
+<style>
+    body {
+        font-family: 'Manrope', 'Noto Sans', sans-serif;
+        background: linear-gradient(120deg, #796380 0%, #b3c4bd 100%);
+    }
+
+    .uni-list-block {
+        background: linear-gradient(90deg, #edecee 20%, #e8d4e7 60%, #fff 100%);
+        border-radius: 1.05rem;
+        box-shadow: 0 3px 20px #c4b3b455;
+        margin: 10px;
+        padding: 1.18rem 1.3rem;
+        display: flex;
+        align-items: center;
+        min-height: 72px;
+        gap: 1.2rem;
+        opacity: 0;
+        transform: translateX(0);
+        animation-duration: 0.42s;
+        animation-timing-function: cubic-bezier(.55, 1.5, .45, 1);
+        animation-fill-mode: forwards;
+    }
+
+    .uni-left {
+        animation-name: fadeUniLeft;
+    }
+
+    .uni-right {
+        animation-name: fadeUniRight;
+    }
+
+    @keyframes fadeUniLeft {
+        from {
+            opacity: 0;
+            transform: translateX(-34px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+
+    @keyframes fadeUniRight {
+        from {
+            opacity: 0;
+            transform: translateX(34px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+
+    .uni-img {
+        width: 56px;
+        height: 56px;
+        min-width: 56px;
+        min-height: 56px;
+        border-radius: 7px;
+        background: #edecee;
+        object-fit: cover;
+        border: 1.5px solid #e5e4e7;
+    }
+
+    .uni-name {
+        font-size: 1.11rem;
+        font-weight: 600;
+        color: #151316;
+        margin-bottom: 2px;
+        line-height: 1.18;
+        letter-spacing: -0.01em;
+        text-decoration: none;
+    }
+
+    .uni-domain {
+        color: #796380;
+        font-size: 0.96rem;
+        font-weight: 400;
+        letter-spacing: 0.01em;
+        opacity: 0.89;
+        line-height: 1.09;
+    }
+
+    .uni-link {
+        text-decoration: none;
+        color: #151316;
+        transition: color 0.18s;
+    }
+
+    .uni-link:hover {
+        color: #a78d94;
+        text-decoration: underline;
+    }
+
+    .uni-title {
+        font-size: 1.42rem;
+        font-weight: bold;
+        color: #151316;
+        margin-bottom: 0.4rem;
+        padding-left: 1.3rem;
+        letter-spacing: -0.01em;
+    }
+
+    @media (max-width: 600px) {
+        .uni-list-block {
+            padding: 0.85rem 0.7rem;
+        }
+
+        .uni-img {
+            width: 44px;
+            height: 44px;
+            min-width: 44px;
+            min-height: 44px;
+        }
+
+        .uni-title {
+            font-size: 1.19rem;
+            padding-left: 0.8rem;
+        }
+    }
+</style>
+
+<!-- Весь защищённый контент должен быть внутри этого блока -->
+<div id="protected-content" style="display:none">
+
+    <h2 class="uni-title">Your University</h2>
+    {% if user_university %}
+    <div class="uni-list-block uni-left" style="animation-delay:0.05s;">
+        <img class="uni-img" src="{{ user_university.image_url or '/static/img/default-avatar.png' }}" alt="Logo">
+        <div class="flex flex-col justify-center">
+            <a href="/universities/{{ user_university.id }}/sections" class="uni-link uni-name">
+                {{ user_university.name }}
+            </a>
+            <span class="uni-domain">{{ user_university.email_domain }}</span>
+        </div>
+    </div>
+    {% endif %}
+
+    <h2 class="uni-title" style="margin-top: 0.6rem;">All Universities</h2>
+    {% set delay = 0.13 %}
+    {% for uni in other_universities %}
+    {% set side = 'uni-left' if loop.index0 % 2 == 0 else 'uni-right' %}
+    <div class="uni-list-block {{ side }}" style="animation-delay: {{ delay }}s;">
+        <img class="uni-img" src="{{ uni.image_url or '/static/img/default-avatar.png' }}" alt="Logo">
+        <div class="flex flex-col justify-center">
+            <a href="/universities/{{ uni.id }}/sections" class="uni-link uni-name">
+                {{ uni.name }}
+            </a>
+            <span class="uni-domain">{{ uni.email_domain }}</span>
+        </div>
+    </div>
+    {% set delay = delay + 0.09 %}
+    {% endfor %}
+
+</div>
+{% endblock %}
+
+
+{% block scripts %}
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        fetch("/auth/check", { credentials: "include" })
+            .then(r => {
+                if (r.status === 401) {
+                    window.location.replace("/auth/login");
+                } else {
+                    document.getElementById("protected-content").style.display = "block";
+                }
+            });
+    });
+    window.addEventListener("pageshow", function () {
+        fetch("/auth/check", { credentials: "include" })
+            .then(r => {
+                if (r.status === 401) window.location.replace("/auth/login");
+                else document.getElementById("protected-content").style.display = "block";
+            });
+    });
+
+</script>
+{% endblock %}

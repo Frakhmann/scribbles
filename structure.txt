@@ -1,0 +1,119 @@
+.
+├── alembic
+│   ├── env.py
+│   ├── README
+│   ├── script.py.mako
+│   └── versions
+│       ├── 20b2b1227b6c_add_notifications_table.py
+│       ├── 27cfb74d9d79_create_universities_table.py
+│       ├── 28243bd4dcfc_add_notifications_table.py
+│       ├── 48bb30d76dfa_add_posts_table.py
+│       ├── 4bc791ba4ed3_add_notifications_table.py
+│       ├── 5870485c441f_add_like_model.py
+│       ├── 59fe3fbc8bc6_remove_is_anonymous_from_posts.py
+│       ├── 642b0ee9fa97_add_comments_table.py
+│       ├── 700a6b1725a9_remove_is_anonymous_and_likes_from_.py
+│       ├── 877dc9af41e8_add_comments_table.py
+│       ├── 8ab11cf16fa7_initial_migration.py
+│       ├── 902332bc6639_add_sections_table_and_link_to_posts.py
+│       ├── 9aacf3db6945_set_section_id_not_null.py
+│       ├── b30c96664230_add_ondelete_cascade_to_post_related_.py
+│       ├── bb2e7e994507_add_university_id_to_posts.py
+│       ├── c82d08826668_set_university_id_not_null.py
+│       ├── cbec4475001f_add_comment_id_to_like.py
+│       ├── cf441744f2da_remove_comment_id_from_likes.py
+│       ├── d77a6b9330c0_add_university_id_to_users.py
+│       ├── e9ba0bfb9d91_add_comments_table.py
+│       ├── ed3c2f16a242_add_activation_token_fields_to_user.py
+│       ├── f639f963abe4_add_image_url_to_university.py
+│       └── f91533657887_add_like_table.py
+├── alembic.ini
+├── app
+│   ├── auth
+│   │   └── dependencies.py
+│   ├── core
+│   │   ├── config.py
+│   │   └── templates.py
+│   ├── crud
+│   │   └── crud_notification.py
+│   ├── db
+│   │   ├── base_class.py
+│   │   ├── base.py
+│   │   ├── init_data.py
+│   │   ├── init_db.py
+│   │   └── session.py
+│   ├── __init__.py
+│   ├── main.py
+│   ├── models
+│   │   ├── comment.py
+│   │   ├── like.py
+│   │   ├── notification.py
+│   │   ├── post.py
+│   │   ├── section.py
+│   │   ├── university.py
+│   │   └── user.py
+│   ├── routers
+│   │   ├── auth.py
+│   │   ├── comments.py
+│   │   ├── like.py
+│   │   ├── notification.py
+│   │   ├── posts.py
+│   │   ├── search.py
+│   │   ├── sections.py
+│   │   ├── universities.py
+│   │   ├── universities_sections.py
+│   │   └── users.py
+│   ├── schemas
+│   │   ├── comment.py
+│   │   ├── like.py
+│   │   ├── notification.py
+│   │   ├── post.py
+│   │   ├── section.py
+│   │   ├── university.py
+│   │   └── user.py
+│   ├── static
+│   │   ├── css
+│   │   │   └── style.css
+│   │   ├── img
+│   │   │   ├── default-avatar.png
+│   │   │   └── scribbles.png
+│   │   ├── js
+│   │   │   └── script.js
+│   │   └── universities
+│   │       ├── amity.jpg
+│   │       ├── bmu.jpg
+│   │       ├── bucheon.jpg
+│   │       ├── inha.jpg
+│   │       ├── jdu.jpg
+│   │       ├── mdis.jpg
+│   │       ├── polito.jpg
+│   │       ├── webster.jpg
+│   │       └── wiut.jpg
+│   ├── templates
+│   │   ├── base.html
+│   │   ├── coming_soon.html
+│   │   ├── components
+│   │   │   ├── footer.html
+│   │   │   └── post_card.html
+│   │   ├── create_post.html
+│   │   ├── index.html
+│   │   ├── login.html
+│   │   ├── post_detail.html
+│   │   ├── profile.html
+│   │   ├── register.html
+│   │   ├── section_posts.html
+│   │   ├── sections.html
+│   │   └── universities.html
+│   └── utils
+│       ├── email.py
+│       └── security.py
+├── check.py
+├── .env
+├── __init__.py
+├── README.mb
+├── requirements.txt
+├── run.sh
+├── structure.txt
+└── structure.txtn
+
+19 directories, 98 files

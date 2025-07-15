@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en" class="transition-all duration-300">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=390, initial-scale=1.0" />
+    <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+
+    <title>{% block title %}Scribbles{% endblock %}</title>
+
+    <!-- Тема до загрузки Tailwind -->
+    <script>
+        if (localStorage.getItem("theme") === "dark") {
+            document.documentElement.classList.add("dark");
+        }
+    </script>
+
+    <!-- Tailwind -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        scribble: ['"Othello MT"', 'sans-serif']
+                    },
+                    colors: {
+                        primary: '#796380',
+                        secondary1: '#a78d94',
+                        secondary2: '#c4b3b4',
+                        secondary3: '#b3c4bd',
+                    }
+                }
+            }
+        };
+    </script>
+
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="/static/css/style.css" />
+</head>
+
+<body class="bg-white dark:bg-gray-900 text-gray-900 dark:text-white transition-all duration-300"
+    style="background: linear-gradient(120deg, #796380 0%, #b3c4bd 100%);">
+
+    <div class="mx-auto w-full min-h-screen font-sans relative">
+        <!-- Header -->
+        {% block header %}
+        <header class="flex items-center justify-center px-1 py-1 ">
+            <h1 class="text-lg font-bold font-scribble text-black">Scribbles</h1>
+        </header>
+
+        {% endblock %}
+
+        <!-- Main -->
+        <main class=" py-1 pb-24">
+            {% block content %}{% endblock %}
+        </main>
+
+        <!-- Footer -->
+        {% block footer %}
+        {% include "components/footer.html" %}
+        {% endblock %}
+
+    </div>
+
+    <script src="/static/js/script.js"></script>
+    {% block scripts %}{% endblock %}
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            // Лайки (клик)
+            function bindLikeButtons() {
+                const likeButtons = document.querySelectorAll(".like-btn");
+                likeButtons.forEach(button => {
+                    button.onclick = async (e) => {
+                        e.preventDefault();
+                        const postId = button.getAttribute("data-post-id");
+                        const countSpan = document.getElementById(`like-count-${postId}`);
+                        const icon = document.getElementById(`like-icon-${postId}`);
+
+                        const response = await fetch("/likes/", {
+                            method: "POST",
+                            headers: {
+                                "Authorization": `Bearer ${localStorage.getItem("access_token")}`,
+                                "Content-Type": "application/json"
+                            },
+                            body: JSON.stringify({ post_id: parseInt(postId) })
+                        });
+
+                        if (response.ok) {
+                            const data = await response.json();
+                            countSpan.textContent = data.likes_count;
+
+                            if (data.liked) {
+                                icon.classList.remove("bi-heart");
+                                icon.classList.add("bi-heart-fill");
+                            } else {
+                                icon.classList.remove("bi-heart-fill");
+                                icon.classList.add("bi-heart");
+                            }
+                        } else {
+                            console.error("Ошибка при отправке лайка");
+                        }
+                    };
+                });
+            }
+
+            // Состояние лайков (актуализация)
+            async function updateLikeIcons() {
+                const postIds = Array.from(document.querySelectorAll(".like-btn"))
+                    .map(btn => btn.getAttribute("data-post-id"))
+                    .filter(Boolean);
+
+                let likedData = [];
+                let likeCounts = {};
+
+                if (postIds.length > 0) {
+                    // Получить все лайкнутые посты
+                    const response = await fetch("/likes/user-liked-posts", {
+                        headers: {
+                            "Authorization": `Bearer ${localStorage.getItem("access_token")}`,
+                            "Content-Type": "application/json"
+                        }
+                    });
+                    if (response.ok) {
+                        likedData = await response.json();
+                    }
+
+                    // Получить количество лайков для всех постов одним запросом
+                    const countsResp = await fetch(`/posts/batch-like-counts?ids=${postIds.join(",")}`);
+                    if (countsResp.ok) {
+                        likeCounts = await countsResp.json();
+                    }
+                }
+
+                // Обновить карточки
+                document.querySelectorAll(".like-btn").forEach(button => {
+                    const postId = parseInt(button.getAttribute("data-post-id"));
+                    const icon = document.getElementById(`like-icon-${postId}`);
+                    const countSpan = document.getElementById(`like-count-${postId}`);
+                    if (!icon || !countSpan) return;
+                    if (likedData.includes(postId)) {
+                        icon.classList.remove("bi-heart");
+                        icon.classList.add("bi-heart-fill");
+                    } else {
+                        icon.classList.remove("bi-heart-fill");
+                        icon.classList.add("bi-heart");
+                    }
+                    // ВАЖНО: likeCounts[postId] может быть 0, надо проверять через hasOwnProperty!
+                    countSpan.textContent = Object.prototype.hasOwnProperty.call(likeCounts, postId) ? likeCounts[postId] : "0";
+                });
+            }
+
+
+
+            bindLikeButtons();
+            updateLikeIcons();
+
+            // Вот ключевое отличие — просто всегда обновлять лайки при возврате назад
+            window.addEventListener("pageshow", function () {
+                updateLikeIcons();
+            });
+        });
+
+        document.addEventListener("DOMContentLoaded", function () {
+            fetch("/auth/check", { credentials: "include" })
+                .then(r => {
+                    if (r.status === 401) {
+                        window.location.replace("/auth/login");
+                    }
+                });
+        });
+
+    </script>
+
+</body>
+
+</html>

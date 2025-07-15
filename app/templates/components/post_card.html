@@ -1,0 +1,189 @@
+<div class="post-card-block" style="animation-delay: {{ loop.index0 * 0.07 + 0.05 if loop is defined else 0.05 }}s;">
+  <div class="post-card-content">
+    <div class="post-card-header">
+      <img class="post-card-avatar" src="{{ post.user.avatar_url or '/static/img/default-avatar.png' }}" alt="avatar">
+      <div class="post-card-author-info">
+        <span class="post-card-nickname">{{ post.user.nickname }}</span>
+        <span class="post-card-date">{{ post.created_at.strftime('%d.%m.%Y %H:%M') }}</span>
+      </div>
+    </div>
+    <a href="/posts/{{ post.id }}?from={{ from_url if from_url else '/universities' }}" class="post-card-title">
+      {{ post.title }}
+    </a>
+    <a href="/posts/{{ post.id }}?from={{ from_url if from_url else '/universities' }}" class="post-card-title">
+      {{ post.content[:100] }}{% if post.content|length > 100 %}...{% endif %}
+    </a>
+    <div class="post-card-actions">
+      <button class="post-card-action-btn like-btn" data-post-id="{{ post.id }}">
+        <i id="like-icon-{{ post.id }}"
+          class="bi {% if post.user_liked or post.liked_by_me %}bi-heart-fill{% else %}bi-heart{% endif %}"></i>
+        <span id="like-count-{{ post.id }}">{{ post.likes_count }}</span>
+      </button>
+      <a href="/posts/{{ post.id }}?from={{ from_url if from_url else '/universities' }}" class="post-card-title">
+        <i class="bi bi-chat-dots"></i>
+        <span>{{ post.comments_count if post.comments_count is defined else (post.comments|length if post.comments else
+          0) }}</span>
+      </a>
+      <a href="#" class="post-card-action-btn" title="Пожаловаться"><i class="bi bi-flag"></i></a>
+    </div>
+  </div>
+</div>
+
+
+<style>
+  .post-card-block {
+    background: linear-gradient(90deg, #edecee 20%, #e8d4e7 60%, #fff 100%);
+    border-radius: 1.05rem;
+    box-shadow: 0 3px 18px #c4b3b430;
+    margin: 0.85rem auto 1.1rem auto;
+    max-width: 540px;
+    opacity: 0;
+    transform: translateY(24px);
+    animation: fadePostCard 0.38s cubic-bezier(.55, 1.5, .45, 1) forwards;
+  }
+
+  @keyframes fadePostCard {
+    from {
+      opacity: 0;
+      transform: translateY(32px);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .post-card-content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.69rem;
+    padding: 1.10rem 1.25rem 1.04rem 1.25rem;
+  }
+
+  .post-card-header {
+    display: flex;
+    align-items: center;
+    gap: 0.78rem;
+    margin-bottom: 0.22rem;
+  }
+
+  .post-card-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 1rem;
+    object-fit: cover;
+    background: #edecee;
+    border: 1.2px solid #e5e4e7;
+  }
+
+  .post-card-author-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 1px;
+  }
+
+  .post-card-nickname {
+    font-size: 1.01rem;
+    color: #151316;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    margin-bottom: 1px;
+  }
+
+  .post-card-date {
+    font-size: 0.93rem;
+    color: #796380;
+    opacity: 0.86;
+  }
+
+  .post-card-title {
+    color: #151316;
+    font-size: 1.16rem;
+    font-weight: bold;
+    letter-spacing: -0.01em;
+    line-height: 1.19;
+    margin-bottom: 2px;
+    margin-top: 2px;
+    text-decoration: none;
+    transition: color 0.15s;
+    padding-left: 0.08rem;
+  }
+
+  .post-card-title:hover {
+    color: #a78d94;
+    text-decoration: underline;
+  }
+
+  .post-card-snippet {
+    color: #796380;
+    font-size: 1.02rem;
+    line-height: 1.24;
+    text-decoration: none;
+    margin-bottom: 0.26rem;
+    transition: color 0.15s;
+    padding-left: 0.08rem;
+  }
+
+  .post-card-snippet:hover {
+    color: #b3c4bd;
+  }
+
+  .post-card-actions {
+    display: flex;
+    align-items: center;
+    gap: 1.33rem;
+    margin-top: 0.12rem;
+    padding-left: 0.08rem;
+  }
+
+  .post-card-action-btn {
+    background: none;
+    border: none;
+    color: #795e87;
+    display: flex;
+    align-items: center;
+    gap: 0.29rem;
+    font-size: 1.08rem;
+    cursor: pointer;
+    font-weight: 500;
+    transition: color 0.14s;
+    outline: none;
+    padding: 0 2px;
+    text-decoration: none;
+  }
+
+  .post-card-action-btn:hover {
+    color: #a78d94;
+  }
+
+  @media (max-width: 600px) {
+    .post-card-block {
+      padding-left: 0;
+      padding-right: 0;
+      margin: 22px 10px 22px 10px;
+    }
+
+    .post-card-content {
+      padding: 0.81rem 0.60rem 0.78rem 0.60rem;
+    }
+
+    .post-card-title {
+      font-size: 1.04rem;
+    }
+
+    .post-card-snippet {
+      font-size: 0.93rem;
+    }
+
+    .post-card-header {
+      gap: 0.57rem;
+    }
+
+    .post-card-avatar {
+      width: 32px;
+      height: 32px;
+    }
+  }
+</style>

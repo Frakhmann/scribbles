@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+
+{% block title %}Скоро! — Scribbles{% endblock %}
+
+{% block content %}
+<style>
+    .coming-soon-block {
+        max-width: 450px;
+        margin: 75px 10px 0 10px;
+        padding: 2.4rem 2rem 2.2rem 2rem;
+        background: linear-gradient(105deg, #edecee 10%, #e8d4e7 55%, #fff 100%);
+        border-radius: 1.2rem;
+        box-shadow: 0 6px 36px #c4b3b420;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 1.7rem;
+        text-align: center;
+        opacity: 0;
+        animation: fadeIn 0.54s cubic-bezier(.55, 1.5, .45, 1) 0.14s forwards;
+    }
+
+    .coming-soon-center {
+        display: flex;
+        justify-content: center;
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(35px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .coming-soon-icon {
+        font-size: 3.2rem;
+        color: #796380;
+        opacity: 0.82;
+    }
+
+    .coming-soon-title {
+        font-size: 1.32rem;
+        font-weight: 700;
+        color: #151316;
+        margin-bottom: 2px;
+        letter-spacing: -0.02em;
+    }
+
+    .coming-soon-desc {
+        color: #795e87;
+        font-size: 1.08rem;
+        opacity: 0.84;
+        margin-bottom: 2px;
+    }
+</style>
+
+<div class="coming-soon-center">
+    <div class="coming-soon-block">
+        <div class="coming-soon-icon">
+            <i class="bi bi-hourglass-split"></i>
+        </div>
+        <div class="coming-soon-title">
+            {{ title or "Скоро здесь появится новая фича!" }}
+        </div>
+        <div class="coming-soon-desc">
+            {{ desc or "Функция находится в разработке. Следите за обновлениями — она появится совсем скоро!" }}
+        </div>
+    </div>
+</div>
+{% endblock %}

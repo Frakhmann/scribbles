@@ -1,0 +1,579 @@
+{% extends "base.html" %}
+
+{% block title %}Пост — Scribbles{% endblock %}
+{% block header %}{% endblock %}
+
+{% block content %}
+<style>
+    body {
+        font-family: 'Manrope', 'Noto Sans', sans-serif;
+        background: linear-gradient(120deg, #796380 0%, #b3c4bd 100%);
+    }
+
+    .back-btn-fixed {
+        position: fixed;
+        left: calc(50% - 270px);
+        top: 18px;
+        z-index: 30;
+        display: flex;
+        align-items: center;
+        padding: 0.35rem 0.7rem 0.35rem 0.5rem;
+        border: none;
+        border-radius: 1.2rem;
+        cursor: pointer;
+        transition: background .18s;
+    }
+
+    .back-btn-fixed:hover {
+        background: #e8d4e7dd;
+    }
+
+    .back-btn-fixed i {
+        font-size: 1.6rem;
+    }
+
+    @media (max-width: 540px) {
+        .back-btn-fixed {
+            left: 8px;
+            top: 8px;
+            padding: 0.20rem 0.5rem 0.20rem 0.38rem;
+        }
+    }
+
+    .post-block {
+        background: linear-gradient(90deg, #edecee 20%, #e8d4e7 60%, #fff 100%);
+        border-radius: 1.05rem;
+        box-shadow: 0 3px 20px #c4b3b455;
+        margin: 60px 10px 22px 10px;
+        padding: 1.45rem 1.3rem 1.15rem 1.3rem;
+        display: flex;
+        flex-direction: column;
+        gap: 1.1rem;
+        opacity: 0;
+        transform: translateY(20px);
+        animation: fadePostIn 0.45s cubic-bezier(.55, 1.5, .45, 1) 0.1s forwards;
+        max-width: 540px;
+        margin-left: auto;
+        margin-right: auto;
+        position: relative;
+    }
+
+    @keyframes fadePostIn {
+        from {
+            opacity: 0;
+            transform: translateY(38px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .post-header {
+        display: flex;
+        align-items: center;
+        gap: 1.05rem;
+        margin-bottom: -7px;
+    }
+
+    .post-avatar {
+        width: 54px;
+        height: 54px;
+        border-radius: 1.1rem;
+        object-fit: cover;
+        background: #edecee;
+        border: 1.5px solid #e5e4e7;
+    }
+
+    .post-author-info {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    .post-nickname {
+        font-size: 1.07rem;
+        font-weight: 600;
+        color: #151316;
+        margin-bottom: 2px;
+        line-height: 1.18;
+        letter-spacing: -0.01em;
+    }
+
+    .post-date {
+        color: #796380;
+        font-size: 0.97rem;
+        font-weight: 400;
+        opacity: 0.89;
+        line-height: 1.08;
+    }
+
+    .post-title {
+        font-size: 1.31rem;
+        font-weight: bold;
+        color: #151316;
+        margin-bottom: 0.36rem;
+        letter-spacing: -0.01em;
+        padding-left: 0.1rem;
+    }
+
+    .post-content {
+        font-size: 1.08rem;
+        color: #151316;
+        font-weight: 400;
+        padding-left: 0.1rem;
+        margin-bottom: 0.6rem;
+        white-space: pre-line;
+    }
+
+    .post-media-block {
+        width: 100%;
+        padding: 0.2rem 0;
+        display: flex;
+        justify-content: center;
+    }
+
+    .post-media {
+        border-radius: 1.1rem;
+        max-height: 370px;
+        object-fit: contain;
+        width: 100%;
+        background: #ebe9ee;
+        box-shadow: 0 2px 16px #c4b3b433;
+        border: 1px solid #eee;
+    }
+
+    .post-actions {
+        display: flex;
+        align-items: center;
+        gap: 1.8rem;
+        margin-top: 0.1rem;
+        padding-left: 0.1rem;
+    }
+
+    .post-action-btn {
+        background: none;
+        border: none;
+        color: #795e87;
+        display: flex;
+        align-items: center;
+        gap: 0.44rem;
+        font-size: 1.12rem;
+        cursor: pointer;
+        font-weight: 500;
+        transition: color 0.16s;
+        outline: none;
+        padding: 0 4px;
+    }
+
+    .post-action-btn:hover {
+        color: #a78d94;
+    }
+
+    .post-edit-btn {
+        color: #796380;
+    }
+
+    .post-edit-btn:hover {
+        color: #a78d94;
+    }
+
+    .post-delete-btn {
+        color: #c97887;
+    }
+
+    .post-delete-btn:hover {
+        color: #f04c74;
+    }
+
+    .comments-title {
+        font-size: 1.08rem;
+        font-weight: 700;
+        color: #151316;
+        margin: 0.7rem 0 0.5rem 0.12rem;
+        letter-spacing: -0.01em;
+    }
+
+    .comment-block {
+        display: flex;
+        gap: 0.95rem;
+        padding: 0.95rem 0 0.85rem 0;
+        border-bottom: 1px solid #ece6f2;
+        animation: fadeCommentIn 0.35s cubic-bezier(.57, 1.5, .42, 1) forwards;
+        opacity: 0;
+        transform: translateY(14px);
+    }
+
+    .comment-block:last-child {
+        border-bottom: none;
+    }
+
+    @keyframes fadeCommentIn {
+        from {
+            opacity: 0;
+            transform: translateY(14px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .comment-avatar {
+        width: 38px;
+        height: 38px;
+        border-radius: 1rem;
+        object-fit: cover;
+        background: #edecee;
+        border: 1.2px solid #e5e4e7;
+    }
+
+    .comment-body {
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+        min-width: 0;
+    }
+
+    .comment-user {
+        font-weight: 600;
+        font-size: 0.97rem;
+        color: #151316;
+        margin-bottom: 1px;
+    }
+
+    .comment-date {
+        font-size: 0.88rem;
+        color: #796380;
+        opacity: 0.87;
+        margin-left: 10px;
+        font-weight: 400;
+    }
+
+    .comment-content {
+        color: #151316;
+        font-size: 0.98rem;
+        margin-top: 2px;
+    }
+
+    .comment-empty {
+        color: #795e87;
+        opacity: 0.79;
+        font-size: 0.97rem;
+        margin: 1.7rem 0 0.8rem 0.15rem;
+    }
+
+    /* Модалка удаления */
+    #delete-modal-bg {
+        display: none;
+        position: fixed;
+        left: 0;
+        top: 0;
+        width: 100vw;
+        height: 100vh;
+        background: rgba(60, 40, 70, 0.32);
+        z-index: 9999;
+        align-items: center;
+        justify-content: center;
+        backdrop-filter: blur(5px);
+        -webkit-backdrop-filter: blur(5px);
+    }
+
+    #delete-modal {
+        background: #fff;
+        max-width: 340px;
+        width: 96vw;
+        border-radius: 1.4rem;
+        box-shadow: 0 3px 34px #79638055;
+        padding: 2.1rem 1.2rem 1.2rem 1.2rem;
+        text-align: center;
+        position: relative;
+    }
+
+    .modal-btn-row {
+        display: flex;
+        gap: 1.4rem;
+        justify-content: center;
+    }
+
+    .modal-delete-btn {
+        background: #c97887;
+        color: #fff;
+        width: 110px;
+        border-radius: 1.07rem;
+        border: none;
+        font-weight: 600;
+        font-size: 1.05rem;
+        padding: 0.72rem 0;
+        cursor: pointer;
+    }
+
+    .modal-cancel-btn {
+        background: #edecee;
+        color: #796380;
+        width: 110px;
+        border-radius: 1.07rem;
+        border: none;
+        font-weight: 600;
+        font-size: 1.05rem;
+        padding: 0.72rem 0;
+        cursor: pointer;
+    }
+
+    @media (max-width: 600px) {
+        .post-block {
+            padding: 0.95rem 0.45rem 0.95rem 0.45rem;
+            margin: 65px 10px 22px 10px;
+        }
+
+        .post-avatar {
+            width: 38px;
+            height: 38px;
+        }
+
+        .post-title {
+            font-size: 1.07rem;
+        }
+
+        .post-content {
+            font-size: 0.98rem;
+        }
+
+        .back-btn-fixed {
+            top: 8px;
+            left: 6px;
+            padding: 0.2rem 0.56rem 0.2rem 0.35rem;
+        }
+
+        #delete-modal {
+            max-width: 98vw;
+            padding: 1.2rem 0.3rem 1.2rem 0.3rem;
+        }
+    }
+</style>
+
+<!-- Кнопка "назад" -->
+<button id="back-btn-post" class="back-btn-fixed" aria-label="Назад">
+    <i class="bi bi-arrow-left"></i>
+</button>
+
+
+
+<!-- Пост -->
+<div class="post-block">
+    <div class="post-header">
+        <img class="post-avatar" src="{{ post.user.avatar_url or '/static/img/default-avatar.png' }}" alt="Avatar">
+        <div class="post-author-info">
+            <span class="post-nickname">{{ post.user.nickname }}</span>
+            <span class="post-date">{{ post.created_at.strftime('%d.%m.%Y %H:%M') }}</span>
+        </div>
+    </div>
+    <div>
+        <div class="post-title">{{ post.title }}</div>
+        <div class="post-content">{{ post.content }}</div>
+        {% if post.media_url %}
+        <div class="post-media-block">
+            <img src="{{ post.media_url }}" alt="media" class="post-media" />
+        </div>
+        {% endif %}
+    </div>
+    <div class="post-actions">
+        <button class="post-action-btn like-btn" data-post-id="{{ post.id }}">
+            <i id="like-icon-{{ post.id }}"
+                class="bi {% if liked_by_me %}bi-heart-fill{% else %}bi-heart{% endif %}"></i>
+            <span id="like-count-{{ post.id }}">{{ post.likes_count }}</span>
+        </button>
+        <div class="post-action-btn" style="cursor:default;">
+            <i class="bi bi-chat-dots"></i>
+            <span>{{ post.comments|length if post.comments else 0 }}</span>
+        </div>
+        {% if is_author %}
+        <a href="/posts/{{ post.id }}/edit" class="post-action-btn post-edit-btn" title="Редактировать">
+            <i class="bi bi-pencil-square"></i>
+        </a>
+        {% endif %}
+        {% if is_author or is_admin %}
+        <button onclick="showDeleteModal({{ post.id }})" class="post-action-btn post-delete-btn" title="Удалить">
+            <i class="bi bi-trash3"></i>
+        </button>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Кастомная модалка подтверждения удаления -->
+<div id="delete-modal-bg">
+    <div id="delete-modal">
+        <div style="font-size:2.3rem; margin-bottom:0.5rem; color:#c97887;">
+            <i class="bi bi-trash3"></i>
+        </div>
+        <div style="font-size:1.17rem; color:#151316; font-weight:600; margin-bottom:1.1rem;">
+            Удалить этот пост?
+        </div>
+        <div class="modal-btn-row">
+            <button id="delete-confirm-btn" class="modal-delete-btn">Удалить</button>
+            <button id="delete-cancel-btn" class="modal-cancel-btn">Отмена</button>
+        </div>
+    </div>
+</div>
+
+
+<!-- Комментарии -->
+<div style="max-width:540px;margin: 10px auto;">
+    <div class="comments-title">Комментарии</div>
+    {% if post.comments %}
+    {% for comment in post.comments %}
+    <div class="comment-block" style="animation-delay:{{ 0.11 + loop.index0*0.05 }}s;">
+        <img class="comment-avatar" src="{{ comment.user.avatar_url or '/static/img/default-avatar.png' }}"
+            alt="Avatar">
+        <div class="comment-body">
+            <div style="display:flex;align-items:center;gap:0.1rem;">
+                <span class="comment-user">{{ comment.user.full_name or comment.user.nickname }}</span>
+                <span class="comment-date">{{ comment.created_at.strftime('%d.%m.%Y %H:%M') }}</span>
+            </div>
+            <div class="comment-content">{{ comment.content }}</div>
+        </div>
+    </div>
+    {% endfor %}
+    {% else %}
+    <div class="comment-empty">Комментариев пока нет.</div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Лайк
+    document.addEventListener("DOMContentLoaded", () => {
+        const likeBtn = document.querySelector('.like-btn');
+        if (likeBtn) {
+            likeBtn.addEventListener('click', async (e) => {
+                e.preventDefault();
+                const postId = likeBtn.getAttribute("data-post-id");
+                const countSpan = document.getElementById(`like-count-${postId}`);
+                const icon = document.getElementById(`like-icon-${postId}`);
+
+                const response = await fetch("/likes/", {
+                    method: "POST",
+                    headers: {
+                        "Authorization": `Bearer ${localStorage.getItem("access_token")}`,
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ post_id: parseInt(postId) })
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    countSpan.textContent = data.likes_count;
+                    icon.classList.remove("bi-heart", "bi-heart-fill");
+                    icon.classList.add(data.liked ? "bi-heart-fill" : "bi-heart");
+                } else {
+                    console.error("Ошибка при отправке лайка");
+                }
+            });
+        }
+    });
+
+    // Кастомная модалка удаления поста
+    let postIdToDelete = null;
+
+    function showDeleteModal(postId) {
+        postIdToDelete = postId;
+        document.getElementById("delete-modal-bg").style.display = "flex";
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+        const modalBg = document.getElementById("delete-modal-bg");
+        const confirmBtn = document.getElementById("delete-confirm-btn");
+        const cancelBtn = document.getElementById("delete-cancel-btn");
+
+        if (confirmBtn && cancelBtn) {
+            confirmBtn.onclick = function () {
+                if (!postIdToDelete) return;
+                fetch(`/posts/${postIdToDelete}`, {
+                    method: 'DELETE',
+                    credentials: 'include'
+                }).then(resp => {
+                    if (resp.status === 204 || resp.status === 200) {
+                        window.location.href = "/";
+                    } else {
+                        resp.json().then(data => alert(data.detail || "Ошибка удаления"));
+                    }
+                });
+                modalBg.style.display = "none";
+                postIdToDelete = null;
+            };
+
+            cancelBtn.onclick = function () {
+                modalBg.style.display = "none";
+                postIdToDelete = null;
+            };
+
+            // Клик по фону закрывает модалку
+            modalBg.onclick = function (e) {
+                if (e.target === modalBg) {
+                    modalBg.style.display = "none";
+                    postIdToDelete = null;
+                }
+            };
+        }
+    });
+
+    // Проверка авторизации
+    fetch("/auth/check", { credentials: "include" })
+        .then(r => {
+            if (r.status === 401) window.location.replace("/auth/login");
+        });
+
+    window.addEventListener("pageshow", function (event) {
+        if (event.persisted) {
+            window.location.reload();
+        } else {
+            fetch("/auth/check", { credentials: "include" })
+                .then(r => {
+                    if (r.status === 401) window.location.replace("/auth/login");
+                });
+        }
+    });
+
+    document.addEventListener("DOMContentLoaded", function () {
+        const params = new URLSearchParams(window.location.search);
+        const fromUrl = params.get('from');
+        document.getElementById("back-btn-post").onclick = function () {
+            if (fromUrl) {
+                window.location.href = fromUrl;
+            } else {
+                history.back();
+            }
+        };
+    });
+</script>
+{% endblock %}
+
+{% block footer %}
+<div class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[540px] z-20 bg-transparent pointer-events-auto">
+    <div class="flex items-center px-1 py-3 gap-3">
+        <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10 shrink-0"
+            style='background-image: url("{{ current_user.avatar_url if current_user and current_user.avatar_url else "/static/img/default-avatar.png" }}");'>
+        </div>
+        <label class="flex flex-col min-w-40 h-12 flex-1">
+            <div class="flex w-full flex-1 items-stretch rounded-xl h-full">
+                <input placeholder="Написать комментарий..."
+                    class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-xl text-[#161118] dark:text-gray-100 focus:outline-0 focus:ring-0 border-none bg-[#eeeaf0] dark:bg-gray-800 focus:border-none h-full placeholder:text-[#795e87] dark:placeholder-gray-400 px-4 rounded-r-none border-r-0 pr-2 text-base font-normal leading-normal"
+                    value="" disabled />
+                <div
+                    class="flex border-none bg-[#eeeaf0] dark:bg-gray-800 items-center justify-center pr-4 rounded-r-xl border-l-0 !pr-2">
+                    <div class="flex items-center gap-4 justify-end">
+                        <div class="flex items-center gap-1">
+                            <button class="flex items-center justify-center p-1.5" disabled>
+                                <i class="bi bi-image text-[#795e87] dark:text-secondary2 text-lg"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </label>
+    </div>
+</div>
+{% endblock %}

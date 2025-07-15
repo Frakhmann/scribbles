@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+
+{% block title %}Разделы — {{ university.name }} — Scribbles{% endblock %}
+
+{% block header %}
+<div class="grid grid-cols-3 items-center w-full max-w-[430px] mx-auto px-1 pt-5 pb-2 mb-3 relative">
+    <div>
+        <button id="back-button" type="button"
+            class="text-2xl text-[#151316] hover:bg-[#edecee] rounded-full p-1 transition">
+            <i class="bi bi-arrow-left"></i>
+        </button>
+    </div>
+    <h2 class="text-lg font-bold text-[#151316] text-center select-none">{{ university.email_domain }}</h2>
+    <div></div>
+</div>
+{% endblock %}
+
+{% block content %}
+<style>
+    body {
+        font-family: 'Manrope', 'Noto Sans', sans-serif;
+        background: linear-gradient(120deg, #796380 0%, #b3c4bd 100%);
+    }
+
+    .section-block {
+        background: #f7f5fa;
+        border-radius: 1.07rem;
+        box-shadow: 0 1px 10px #c4b3b426;
+        display: flex;
+        align-items: center;
+        min-height: 60px;
+        padding: 1rem 1.25rem;
+        margin-bottom: 1.04rem;
+        transition: background 0.16s;
+        font-size: 1.08rem;
+    }
+
+    .section-block:hover {
+        background: #edecee;
+        text-decoration: none;
+    }
+
+    .section-name {
+        color: #151316;
+        font-weight: 500;
+        font-size: 1.03rem;
+    }
+
+    @media (max-width: 600px) {
+
+
+        .section-block {
+            font-size: 0.97rem;
+            padding: 0.8rem 0.7rem;
+            margin: 0.7rem 0.7rem;
+        }
+    }
+</style>
+<div class="flex flex-col w-full max-w-[430px] mx-auto gap-0">
+    <!-- Общая лента — первая -->
+    <a href="/posts/university/{{ university.id if university and university.id else '' }}?from=/universities/{{ university.id if university and university.id else '' }}/sections"
+        class="section-block" style="font-weight:bold;">
+        <span class="section-name">Общая лента</span>
+    </a>
+    {% for section in sections %}
+    {% if section.name != "Общая лента" %}
+    <a href="/sections/{{ section.id }}/posts?from=/universities/{{ university.id if university and university.id else '' }}/sections"
+        class="section-block">
+        <span class="section-name">{{ section.name }}</span>
+    </a>
+    {% endif %}
+    {% endfor %}
+
+    {% endblock %}
+
+    {% block scripts %}
+    <script>
+        document.getElementById("back-button").addEventListener("click", function () {
+            window.location.href = "/universities";
+        });
+    </script>
+    {% endblock %}
