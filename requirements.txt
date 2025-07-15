@@ -13,3 +13,4 @@ gunicorn
 requests
 pydantic-settings
 email-validator
+python-multipart
