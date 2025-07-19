@@ -4,7 +4,7 @@ from email.mime.text import MIMEText
 SMTP_SERVER = 'mail.scribbles.uz'
 SMTP_PORT = 587
 SMTP_USER = 'info@scribbles.uz'
-SMTP_PASSWORD = 'Nasaf1986'  # положи в .env, если переживаешь
+SMTP_PASSWORD = SMTP_PASSWORD  # положи в .env, если переживаешь
 
 def send_confirmation_email(to_email, confirmation_link):
     subject = 'Активация аккаунта Scribbles'
