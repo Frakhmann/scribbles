@@ -8,6 +8,10 @@ from fastapi.templating import Jinja2Templates
 from jose import JWTError, jwt
 
 from app.db.session import SessionLocal
+<<<<<<< HEAD
+from app.core.config import settings
+=======
+>>>>>>> 61f3ab9 (admin panel)
 from app.models.user import User
 from app.models.university import University
 from app.schemas.user import UserCreate, UserRead
@@ -60,7 +64,11 @@ def register(user: UserCreate, db: Session = Depends(get_db)):
     db.commit()
     db.refresh(new_user)
 
+<<<<<<< HEAD
+    activation_link = f"{settings.BASE_URL}/auth/activate?token={token}" # В проде — заменить host!
+=======
     activation_link = f"http://localhost:8000/auth/activate?token={token}"  # В проде — заменить host!
+>>>>>>> 61f3ab9 (admin panel)
     send_confirmation_email(new_user.email, activation_link)
 
     return new_user

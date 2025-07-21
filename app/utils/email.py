@@ -1,10 +1,19 @@
 import smtplib
 from email.mime.text import MIMEText
+<<<<<<< HEAD
+from app.core.config import settings
+
+SMTP_SERVER = settings.SMTP_SERVER
+SMTP_PORT = settings.SMTP_PORT
+SMTP_USER = settings.SMTP_USER
+SMTP_PASSWORD = settings.SMTP_PASSWORD
+=======
 
 SMTP_SERVER = 'mail.scribbles.uz'
 SMTP_PORT = 587
 SMTP_USER = 'info@scribbles.uz'
 SMTP_PASSWORD = 'Nasaf1986'  # положи в .env, если переживаешь
+>>>>>>> 61f3ab9 (admin panel)
 
 def send_confirmation_email(to_email, confirmation_link):
     subject = 'Активация аккаунта Scribbles'

@@ -29,6 +29,11 @@
 │       └── f91533657887_add_like_table.py
 ├── alembic.ini
 ├── app
+<<<<<<< HEAD
+=======
+│   ├── admin_login.py
+│   ├── admin_main.py
+>>>>>>> 61f3ab9 (admin panel)
 │   ├── auth
 │   │   └── dependencies.py
 │   ├── core
@@ -53,6 +58,10 @@
 │   │   ├── university.py
 │   │   └── user.py
 │   ├── routers
+<<<<<<< HEAD
+=======
+│   │   ├── admin.py
+>>>>>>> 61f3ab9 (admin panel)
 │   │   ├── auth.py
 │   │   ├── comments.py
 │   │   ├── like.py
@@ -75,6 +84,10 @@
 │   │   ├── css
 │   │   │   └── style.css
 │   │   ├── img
+<<<<<<< HEAD
+=======
+│   │   │   ├── 404.png
+>>>>>>> 61f3ab9 (admin panel)
 │   │   │   ├── default-avatar.png
 │   │   │   └── scribbles.png
 │   │   ├── js
@@ -90,6 +103,18 @@
 │   │       ├── webster.jpg
 │   │       └── wiut.jpg
 │   ├── templates
+<<<<<<< HEAD
+=======
+│   │   ├── 404.html
+│   │   ├── admin
+│   │   │   ├── dashboard.html
+│   │   │   ├── login.html
+│   │   │   ├── posts.html
+│   │   │   ├── reports.html
+│   │   │   ├── sections.html
+│   │   │   ├── universities.html
+│   │   │   └── users.html
+>>>>>>> 61f3ab9 (admin panel)
 │   │   ├── base.html
 │   │   ├── coming_soon.html
 │   │   ├── components
@@ -106,6 +131,11 @@
 │   │   └── universities.html
 │   └── utils
 │       ├── email.py
+<<<<<<< HEAD
+=======
+│       ├── __init__.py
+│       ├── password.py
+>>>>>>> 61f3ab9 (admin panel)
 │       └── security.py
 ├── check.py
 ├── .env
@@ -113,7 +143,13 @@
 ├── README.mb
 ├── requirements.txt
 ├── run.sh
+<<<<<<< HEAD
 ├── structure.txt
 └── structure.txtn
 
 19 directories, 98 files
+=======
+└── structure.txt
+
+20 directories, 111 files
+>>>>>>> 61f3ab9 (admin panel)
