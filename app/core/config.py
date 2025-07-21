@@ -3,27 +3,6 @@ from typing import Optional
 from pydantic_settings import BaseSettings
 
 class Settings(BaseSettings):
-    DATABASE_URL: Optional[str] = None
-    DATABASE_HOST: Optional[str] = None
-    DATABASE_PORT: Optional[str] = None
-    DATABASE_NAME: Optional[str] = None
-    DATABASE_USER: Optional[str] = None
-    DATABASE_PASSWORD: Optional[str] = None
-    SECRET_KEY: str
-    ALGORITHM: str = "HS256"
-    BASE_URL: str = "http://localhost:8000"
-    SMTP_SERVER: str
-    SMTP_PORT: int
-    SMTP_USER: str
-    SMTP_PASSWORD: str
-
-    @property
-    def SQLALCHEMY_DATABASE_URI(self):
-        if self.DATABASE_URL:
-            return self.DATABASE_URL
-from pydantic_settings import BaseSettings
-
-class Settings(BaseSettings):
     DATABASE_HOST: str
     DATABASE_PORT: str
     DATABASE_NAME: str
