@@ -15,11 +15,8 @@ from app.models.user import User
 from starlette.exceptions import HTTPException as StarletteHTTPException
 
 
-<<<<<<< HEAD
-from app.routers import auth, users, posts, sections, comments, like, notification, universities, universities_sections, search
-=======
+
 from app.routers import auth, users, posts, sections, comments, like, notification, universities, universities_sections, search, admin
->>>>>>> 61f3ab9 (admin panel)
 
 
 
@@ -40,10 +37,9 @@ app.include_router(notification.router)
 app.include_router(universities.router)
 app.include_router(universities_sections.router)
 app.include_router(search.router)
-<<<<<<< HEAD
-=======
+
 app.include_router(admin.router)
->>>>>>> 61f3ab9 (admin panel)
+
 
 # 🌐 Статические файлы
 app.mount("/static", StaticFiles(directory="app/static"), name="static")
