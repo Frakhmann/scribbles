@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 from typing import Optional
 from pydantic_settings import BaseSettings
 
@@ -21,7 +21,6 @@ class Settings(BaseSettings):
     def SQLALCHEMY_DATABASE_URI(self):
         if self.DATABASE_URL:
             return self.DATABASE_URL
-=======
 from pydantic_settings import BaseSettings
 
 class Settings(BaseSettings):
@@ -35,7 +34,6 @@ class Settings(BaseSettings):
 
     @property
     def SQLALCHEMY_DATABASE_URI(self):
->>>>>>> 61f3ab9 (admin panel)
         return f"postgresql+psycopg2://{self.DATABASE_USER}:{self.DATABASE_PASSWORD}" \
                f"@{self.DATABASE_HOST}:{self.DATABASE_PORT}/{self.DATABASE_NAME}"
 

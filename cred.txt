@@ -1,9 +1,0 @@
-dpg-d1r6gkripnbc73f4125g-a
-
-5432
-scribbles_nqi2
-scribbles_nqi2_user
-OY1YweDzzSMkUUl62xn7rYvZW5asL7iE
-postgresql://scribbles_nqi2_user:OY1YweDzzSMkUUl62xn7rYvZW5asL7iE@dpg-d1r6gkripnbc73f4125g-a/scribbles_nqi2
-postgresql://scribbles_nqi2_user:OY1YweDzzSMkUUl62xn7rYvZW5asL7iE@dpg-d1r6gkripnbc73f4125g-a.oregon-postgres.render.com/scribbles_nqi2
-PGPASSWORD=OY1YweDzzSMkUUl62xn7rYvZW5asL7iE psql -h dpg-d1r6gkripnbc73f4125g-a.oregon-postgres.render.com -U scribbles_nqi2_user scribbles_nqi2
