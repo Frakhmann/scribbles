@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Посты — Админка Scribbles</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <meta name="viewport" content="width=1280">
+    <style>
+        body {
+            font-family: Inter, "Noto Sans", sans-serif;
+        }
+
+        .cursor-pointer {
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body class="bg-white">
+    <div class="flex min-h-screen">
+        {% include "admin/partials/sidebar.html" %}
+        <div class="flex-1 p-10">
+            <h2 class="text-2xl font-semibold mb-6">Посты</h2>
+            {% if error %}
+            <div id="custom-alert"
+                class="fixed top-5 left-1/2 z-50 transform -translate-x-1/2 w-full max-w-md bg-red-50 border border-red-300 text-red-700 px-6 py-4 rounded-xl shadow-lg flex items-center gap-2">
+                <i class="bi bi-exclamation-triangle text-2xl"></i>
+                <span>{{ error }}</span>
+                <button onclick="document.getElementById('custom-alert').remove()"
+                    class="ml-auto text-red-400 hover:text-red-700 text-2xl leading-none">&times;</button>
+            </div>
+            <script>
+                setTimeout(function () {
+                    var alert = document.getElementById('custom-alert');
+                    if (alert) { alert.remove(); }
+                }, 7000);
+            </script>
+            {% endif %}
+            <div class="overflow-x-auto">
+                <table class="min-w-full border rounded-xl bg-white">
+                    <thead>
+                        <tr class="bg-[#f0f2f5]">
+                            <th class="p-2 font-semibold text-left">ID</th>
+                            <th class="p-2 font-semibold text-left">Заголовок</th>
+                            <th class="p-2 font-semibold text-left">Автор</th>
+                            <th class="p-2 font-semibold text-left">Вуз</th>
+                            <th class="p-2 font-semibold text-left">Раздел</th>
+                            <th class="p-2 font-semibold text-left">Дата</th>
+                            <th class="p-2 font-semibold text-left">Действия</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for post in posts %}
+                        <tr class="border-b hover:bg-gray-50 cursor-pointer" onclick="showPostModal({{ post.id }})"
+                            data-post='{
+                                "id": "{{ post.id }}",
+                                "title": "{{ post.title|e }}",
+                                "content": "{{ post.content|replace(' \n', '\\n' )|replace('\"', '\\\"' )|e
+                            }}", "media_url" : "{{ post.media_url|e }}" , "likes" : {{ post.likes|length if post.likes
+                            else 0 }}, "comments" : {{ post.comments|length if post.comments else 0 }}, "created_at"
+                            : "{{ post.created_at.strftime('%Y-%m-%d %H:%M') if post.created_at else '' }}" , "author"
+                            : "{{ post.user.full_name if post.user else '' }}" , "university"
+                            : "{{ post.university.name if post.university else '' }}" , "section"
+                            : "{{ post.section.name if post.section else '' }}" }'>
+                            <td class="p-2">{{ post.id }}</td>
+                            <td class="p-2 max-w-[200px] truncate" title="{{ post.title }}">{{ post.title or '(Без
+                                заголовка)' }}</td>
+                            <td class="p-2">
+                                {{ post.user.full_name if post.user else '—' }}
+                                <span class="text-xs text-gray-400">{{ post.user.email if post.user else '' }}</span>
+                            </td>
+                            <td class="p-2">{{ post.university.name if post.university else '—' }}</td>
+                            <td class="p-2">{{ post.section.name if post.section else '—' }}</td>
+                            <td class="p-2 text-xs text-gray-500">{{ post.created_at.strftime('%Y-%m-%d %H:%M') if
+                                post.created_at else '' }}</td>
+                            <td class="p-2" onclick="event.stopPropagation()">
+                                <form method="post" action="/admin/posts/delete"
+                                    onsubmit="return confirm('Удалить пост?');" style="display:inline;">
+                                    <input type="hidden" name="post_id" value="{{ post.id }}">
+                                    <button type="submit" class="text-red-600 hover:underline flex items-center gap-1">
+                                        <i class="bi bi-trash"></i> Удалить
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Модальное окно для поста -->
+    <div id="post-modal" class="hidden fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
+        <div class="bg-white rounded-2xl shadow-2xl p-6 relative max-w-lg w-full animate-fade-in flex flex-col gap-3">
+            <button onclick="closePostModal()"
+                class="absolute top-3 right-3 w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 transition text-gray-400 hover:text-gray-800 text-2xl">&times;</button>
+            <div>
+                <div id="modal-post-title" class="text-lg font-bold text-[#796380] break-words"></div>
+                <div class="flex flex-col gap-1 text-sm text-gray-600 my-1" id="modal-post-meta"></div>
+            </div>
+            <div id="modal-post-media" class="mb-2 flex justify-center"></div>
+            <div class="mb-2 whitespace-pre-line text-gray-800 text-[15px]" id="modal-post-content"></div>
+            <div class="flex justify-between items-center border-t pt-3 mt-3 text-sm text-gray-600">
+                <span class="flex items-center gap-1">
+                    <i class="bi bi-heart-fill text-pink-400"></i>
+                    <span id="modal-post-likes" class="font-semibold"></span> лайков
+                </span>
+                <span class="flex items-center gap-1">
+                    <i class="bi bi-chat-left-dots text-blue-400"></i>
+                    <span id="modal-post-comments" class="font-semibold"></span> комментариев
+                </span>
+            </div>
+        </div>
+    </div>
+    <script>
+        function showPostModal(postId) {
+            var row = document.querySelector('tr[onclick="showPostModal(' + postId + ')"]');
+            if (!row) return;
+            var post = JSON.parse(row.getAttribute('data-post'));
+            document.getElementById('modal-post-title').textContent = post.title || '(Без заголовка)';
+            document.getElementById('modal-post-content').textContent = post.content || '';
+            document.getElementById('modal-post-meta').innerHTML =
+                '<div><span class="font-semibold text-gray-800">Автор:</span> ' + (post.author || '—') + '</div>' +
+                (post.university ? '<div><span class="font-semibold text-gray-800">Вуз:</span> ' + post.university + '</div>' : '') +
+                (post.section ? '<div><span class="font-semibold text-gray-800">Раздел:</span> ' + post.section + '</div>' : '') +
+                (post.created_at ? '<div><span class="font-semibold text-gray-800"><i class="bi bi-calendar-week mr-1"></i>Дата:</span> ' + post.created_at + '</div>' : '');
+            document.getElementById('modal-post-likes').textContent = post.likes || 0;
+            document.getElementById('modal-post-comments').textContent = post.comments || 0;
+            var mediaDiv = document.getElementById('modal-post-media');
+            if (post.media_url) {
+                mediaDiv.innerHTML = '<img src="' + post.media_url + '" alt="media" class="max-h-60 max-w-xs rounded-xl border shadow">';
+            } else {
+                mediaDiv.innerHTML = '';
+            }
+            document.getElementById('post-modal').classList.remove('hidden');
+        }
+        function closePostModal() {
+            document.getElementById('post-modal').classList.add('hidden');
+        }
+        window.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape') closePostModal();
+        });
+    </script>
+
+
+</body>
+
+</html>

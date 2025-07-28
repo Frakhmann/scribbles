@@ -1,0 +1,30 @@
+{% set path = request.url.path %}
+<footer
+  class="fixed bottom-0 w-full bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700 text-sm text-center z-10">
+  <div class="flex justify-between px-6 py-2 text-primary dark:text-secondary2">
+    <!-- Home -->
+    <a href="/universities" class="flex flex-col items-center">
+      <i class="bi {{ 'bi-house-fill' if path.startswith('/universities') else 'bi-house' }} text-lg"></i>
+    </a>
+
+    <!-- Search (на страницу-заглушку!) -->
+    <a href="/search/page" class="flex flex-col items-center">
+      <i class="bi {{ 'bi-search-heart-fill' if path.startswith('/search') else 'bi-search' }} text-lg"></i>
+    </a>
+
+    <!-- Create Post -->
+    <a href="/posts/create" class="flex flex-col items-center">
+      <i class="bi {{ 'bi-plus-square-fill' if path.startswith('/posts/create') else 'bi-plus-square' }} text-lg"></i>
+    </a>
+
+    <!-- Notifications (на страницу-заглушку!) -->
+    <a href="/notifications/page" class="flex flex-col items-center">
+      <i class="bi {{ 'bi-bell-fill' if path.startswith('/notifications') else 'bi-bell' }} text-lg"></i>
+    </a>
+
+    <!-- Profile -->
+    <a href="/profile/{{ current_user.nickname if current_user else '' }}" class="flex flex-col items-center">
+      <i class="bi {{ 'bi-person-fill' if path.startswith('/profile') else 'bi-person' }} text-lg"></i>
+    </a>
+  </div>
+</footer>

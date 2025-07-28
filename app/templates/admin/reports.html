@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Жалобы на посты — Админка Scribbles</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <meta name="viewport" content="width=1280">
+    <style>
+        body {
+            font-family: Inter, "Noto Sans", sans-serif;
+        }
+    </style>
+</head>
+
+<body class="bg-white">
+    <div class="flex min-h-screen">
+        {% include "admin/partials/sidebar.html" %}
+        <div class="flex-1 p-10">
+            <h2 class="text-2xl font-semibold mb-6">Жалобы на посты</h2>
+            <div class="overflow-x-auto">
+                <table class="min-w-full border rounded-xl bg-white">
+                    <thead>
+                        <tr class="bg-[#f0f2f5]">
+                            <th class="p-2 font-semibold text-left">ID</th>
+                            <th class="p-2 font-semibold text-left">Пост</th>
+                            <th class="p-2 font-semibold text-left">Пользователь</th>
+                            <th class="p-2 font-semibold text-left">Причина</th>
+                            <th class="p-2 font-semibold text-left">Когда</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for r in reports %}
+                        <tr class="border-b hover:bg-gray-50">
+                            <td class="p-2">{{ r.id }}</td>
+                            <td class="p-2">
+                                <a href="/posts/{{ r.post_id }}" target="_blank" class="text-purple-700 underline">
+                                    Post #{{ r.post_id }}
+                                </a>
+                            </td>
+                            <td class="p-2">
+                                {% if r.user %}
+                                <span class="font-medium">{{ r.user.nickname }}</span>
+                                {% else %}
+                                <span class="text-gray-400">(deleted)</span>
+                                {% endif %}
+                            </td>
+                            <td class="p-2">{{ r.reason }}</td>
+                            <td class="p-2">{{ r.created_at.strftime('%d.%m.%Y %H:%M') }}</td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="5" class="text-center text-gray-400 py-8">
+                                <i class="bi bi-flag-fill text-2xl align-middle"></i>
+                                <span class="align-middle ml-2">Жалоб пока нет</span>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

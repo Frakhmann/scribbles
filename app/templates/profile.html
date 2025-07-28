@@ -1,0 +1,364 @@
+{% extends "base.html" %}
+
+{% block title %}Профиль — Scribbles{% endblock %}
+{% block header %}{% endblock %}
+
+{% block content %}
+<style>
+  body {
+    font-family: 'Manrope', 'Noto Sans', sans-serif;
+    background: linear-gradient(120deg, #796380 0%, #b3c4bd 100%);
+  }
+
+  #protected-content {
+    display: none;
+  }
+
+  .profile-avatar {
+    width: 140px;
+    height: 140px;
+    border-radius: 9999px;
+    background: #edecee;
+    object-fit: cover;
+    border: 2.5px solid #b3c4bd;
+    box-shadow: 0 3px 24px #b3c4bd33;
+    margin-bottom: 0.8rem;
+  }
+
+  .profile-name {
+    font-size: 1.45rem;
+    font-weight: 700;
+    color: #151316;
+    margin-bottom: 0.15rem;
+  }
+
+  .profile-nick {
+    color: #796380;
+    font-size: 1.05rem;
+    font-weight: 500;
+    margin-bottom: 0.6rem;
+    letter-spacing: 0.01em;
+  }
+
+  .profile-stat-row {
+    display: flex;
+    gap: 0.7rem;
+    justify-content: center;
+    margin-bottom: 1.2rem;
+  }
+
+  .profile-stat-block {
+    flex: 1 1 0;
+    background: #f7f5fa;
+    border-radius: 1rem;
+    box-shadow: 0 2px 14px #c4b3b422;
+    padding: 1rem 0.1rem 0.9rem 0.1rem;
+    text-align: center;
+    border: none;
+    min-width: 94px;
+    max-width: 140px;
+  }
+
+  .profile-stat-title {
+    color: #60758a;
+    font-size: 0.99rem;
+    font-weight: 400;
+    opacity: 0.93;
+  }
+
+  .profile-stat-value {
+    font-size: 1.36rem;
+    font-weight: 700;
+    color: #151316;
+    margin-bottom: 2px;
+  }
+
+  .profile-tab-row {
+    display: flex;
+    gap: 1.7rem;
+    justify-content: center;
+    border-bottom: 2.1px solid #edecee;
+    margin-bottom: 0.7rem;
+  }
+
+  .profile-tab {
+    background: none;
+    border-radius: 0;
+    border: none;
+    font-size: 1.03rem;
+    font-weight: bold;
+    padding: 0.89rem 1.5rem 0.66rem 1.5rem;
+    color: #796380;
+    border-bottom: 2px solid transparent;
+    transition: color .22s, border-color .17s;
+    cursor: pointer;
+  }
+
+  .profile-tab.active {
+    color: #151316;
+    border-bottom: 2px solid #a78d94;
+    background: none;
+  }
+
+  .profile-block-card {
+    background: #f7f5fa;
+    border-radius: 1.15rem;
+    box-shadow: 0 2px 15px #c4b3b433;
+    padding: 1.1rem 1rem;
+    margin-bottom: 1.07rem;
+    display: flex;
+    flex-direction: row;
+    gap: 0.88rem;
+    align-items: stretch;
+  }
+
+  .profile-block-card .media-preview {
+    width: 62px;
+    min-width: 62px;
+    height: 48px;
+    border-radius: 0.77rem;
+    background: #edecee;
+    object-fit: cover;
+    box-shadow: 0 0px 7px #b3c4bd22;
+  }
+
+  .profile-block-card .card-content {
+    flex: 1 1 0%;
+    display: flex;
+    flex-direction: column;
+    gap: 0.13rem;
+  }
+
+  .profile-block-comment {
+    background: #f7f5fa;
+    border-radius: 0.84rem;
+    box-shadow: 0 1px 8px #c4b3b422;
+    padding: 0.87rem 1rem;
+    margin-bottom: 0.99rem;
+  }
+
+  .profile-settings-popup {
+    position: absolute;
+    right: 0;
+    top: 110%;
+    width: 194px;
+    background: #fff;
+    border-radius: 1.17rem;
+    box-shadow: 0 4px 24px #c4b3b477;
+    border: 1.1px solid #e4dbe8;
+    padding: 1rem 1.2rem;
+    z-index: 22;
+    display: none;
+  }
+
+  .profile-settings-popup.active {
+    display: block;
+  }
+
+  @media (max-width: 600px) {
+    .profile-avatar {
+      width: 96px;
+      height: 96px;
+    }
+
+    .profile-name {
+      font-size: 1.12rem;
+    }
+
+    .profile-block-card {
+      padding: 0.66rem 0.65rem;
+    }
+
+    .profile-block-card .media-preview {
+      width: 38px;
+      min-width: 38px;
+      height: 30px;
+    }
+
+    .profile-stat-row {
+      gap: 0.35rem;
+    }
+
+    .profile-stat-block {
+      min-width: 70px;
+      font-size: 0.95rem;
+    }
+
+    .profile-tab {
+      padding: 0.71rem 0.8rem 0.48rem 0.8rem;
+    }
+  }
+</style>
+
+<!-- Header и настройки -->
+<div class="grid grid-cols-3 items-center w-full max-w-[420px] mx-auto px-1 pt-5 pb-2 mb-2 relative">
+  <div></div>
+  <h2 class="text-lg font-bold text-[#151316] text-center select-none">Profile</h2>
+  <div class="flex justify-end relative z-10">
+    <button type="button" onclick="toggleSettings()"
+      class="text-[#151316] hover:bg-[#c4b3b4] rounded-full p-2 transition focus:outline-none z-20">
+      <i class="bi bi-gear text-xl"></i>
+    </button>
+    <div id="settingsPopup" class="profile-settings-popup" style="top:42px; right:0;">
+      <button onclick="logout()"
+        class="w-full flex items-center gap-2 text-sm px-2 py-2 rounded-lg hover:bg-red-50 text-red-600 transition font-semibold">
+        <i class="bi bi-box-arrow-right"></i>
+        Log out
+      </button>
+    </div>
+  </div>
+</div>
+
+
+
+<!-- Аватар и имя -->
+
+<id class="protected-content">
+  <div class="flex flex-col items-center gap-2 mb-3 m-10px">
+    <img class="profile-avatar" src="{{ user_profile.avatar_url or '/static/img/default-avatar.png' }}" alt="avatar">
+    <div class="text-center">
+      <p class="profile-name">{{ user_profile.full_name }}</p>
+      <p class="profile-nick">@{{ user_profile.nickname }}</p>
+    </div>
+  </div>
+
+  <!-- Статистика -->
+  <div class="profile-stat-row mb-5 w-full max-w-[420px] mx-auto">
+    <div class="profile-stat-block">
+      <p class="profile-stat-value">{{ posts|length }}</p>
+      <p class="profile-stat-title">Posts</p>
+    </div>
+    <div class="profile-stat-block">
+      <p class="profile-stat-value">{{ comments|length }}</p>
+      <p class="profile-stat-title">Comments</p>
+    </div>
+    <div class="profile-stat-block">
+      <p class="profile-stat-value">{{ liked_posts|length + liked_comments|length }}</p>
+      <p class="profile-stat-title">Likes</p>
+    </div>
+  </div>
+
+  <!-- Табы -->
+  <div class="profile-tab-row mb-2 w-full max-w-[420px] mx-auto">
+    <button onclick="switchTab('tab-posts')" class="profile-tab active">Posts</button>
+    <button onclick="switchTab('tab-comments')" class="profile-tab">Comments</button>
+    <button onclick="switchTab('tab-likes')" class="profile-tab">Likes</button>
+  </div>
+
+  <!-- Контент табов -->
+  <div class="w-full max-w-[420px] mx-auto px-1 pt-2">
+    <!-- Posts -->
+    <div id="tab-posts" class="tab-content block">
+      {% for post in posts %}
+      <div class="profile-block-card">
+        <div class="card-content">
+          <p class="text-xs text-[#60758a] mb-0.5">{{ post.created_at.strftime('%-d %b') }}</p>
+          <p class="text-base font-bold text-[#151316]">{{ post.title }}</p>
+          <p class="text-sm text-[#796380]">{{ post.content[:100] }}{% if post.content|length > 100 %}...{% endif %}</p>
+        </div>
+        {% if post.media_url %}
+        <img class="media-preview" src="{{ post.media_url }}" alt="media">
+        {% endif %}
+      </div>
+      {% endfor %}
+    </div>
+
+    <!-- Comments -->
+    <div id="tab-comments" class="tab-content hidden">
+      {% for comment in comments %}
+      <div class="profile-block-comment">
+        <p class="text-xs text-[#60758a] mb-1">{{ comment.created_at.strftime('%-d %b') }}</p>
+        <p class="text-base text-[#151316]">{{ comment.content }}</p>
+      </div>
+      {% endfor %}
+    </div>
+
+    <!-- Likes -->
+    <div id="tab-likes" class="tab-content hidden">
+      {% for post in liked_posts %}
+      <div class="profile-block-card">
+        <div class="card-content">
+          <p class="text-xs text-[#60758a] mb-0.5">{{ post.created_at.strftime('%-d %b') }}</p>
+          <p class="text-base font-bold text-[#151316]">{{ post.title }}</p>
+          <p class="text-sm text-[#796380]">{{ post.content[:100] }}{% if post.content|length > 100 %}...{% endif %}</p>
+        </div>
+        {% if post.media_url %}
+        <img class="media-preview" src="{{ post.media_url }}" alt="media">
+        {% endif %}
+      </div>
+      {% endfor %}
+
+      {% for comment in liked_comments %}
+      <div class="profile-block-comment">
+        <p class="text-xs text-[#60758a] mb-1">{{ comment.created_at.strftime('%-d %b') }}</p>
+        <p class="text-base text-[#151316]">{{ comment.content }}</p>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</id>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    fetch("/auth/check", { credentials: "include" })
+      .then(r => {
+        if (r.status === 401) {
+          window.location.replace("/auth/login");
+        } else {
+          document.getElementById("protected-content").style.display = "block";
+        }
+      });
+  });
+
+  window.addEventListener("pageshow", function (event) {
+    fetch("/auth/check", { credentials: "include" })
+      .then(r => {
+        if (r.status === 401) window.location.replace("/auth/login");
+        else document.getElementById("protected-content").style.display = "block";
+      });
+  });
+
+  function switchTab(tabId) {
+    document.querySelectorAll(".profile-tab").forEach(btn => {
+      btn.classList.remove("active");
+    });
+    document.querySelectorAll(".tab-content").forEach(el => el.classList.add("hidden"));
+    document.getElementById(tabId).classList.remove("hidden");
+    event.target.classList.add("active");
+  }
+
+  function toggleSettings() {
+    const popup = document.getElementById("settingsPopup");
+    popup.classList.toggle("active");
+  }
+
+  function logout() {
+    fetch("/auth/logout", {
+      method: "POST",
+      credentials: "include"
+    })
+      .then(() => {
+        window.location.replace("/auth/login");
+      })
+      .catch(() => {
+        window.location.replace("/auth/login");
+      });
+  }
+
+  fetch("/auth/check", { credentials: "include" })
+    .then(r => {
+      if (r.status === 401) window.location.replace("/auth/login");
+    });
+  window.addEventListener("pageshow", function (event) {
+    fetch("/auth/check", { credentials: "include" })
+      .then(r => {
+        if (r.status === 401) window.location.replace("/auth/login");
+      });
+  });
+
+
+
+</script>
+{% endblock %}

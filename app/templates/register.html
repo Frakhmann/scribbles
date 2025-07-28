@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Регистрация — Scribbles</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="" />
+    <link rel="stylesheet" as="style" onload="this.rel='stylesheet'"
+        href="https://fonts.googleapis.com/css2?display=swap&amp;family=Manrope%3Awght%40400%3B500%3B700%3B800&amp;family=Noto+Sans%3Awght%40400%3B500%3B700%3B900" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <style>
+        body {
+            font-family: 'Manrope', 'Noto Sans', sans-serif;
+            background: linear-gradient(120deg, #796380 0%, #b3c4bd 100%);
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+        }
+
+        .register-section {
+            background: rgba(255, 255, 255, 0.85);
+            border-radius: 1.3rem;
+            box-shadow: 0 2px 22px #c4b3b455;
+            padding: 2.4rem 2.4rem 2rem 2.4rem;
+            width: 100%;
+            max-width: 420px;
+            margin: 55px 25px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .scribbles-logo {
+            margin-bottom: 15px;
+        }
+
+        .gradient {
+            background: linear-gradient(90deg, #796380 30%, #c4b3b4 80%);
+            color: transparent;
+            background-clip: text;
+            -webkit-background-clip: text;
+            font-weight: bold;
+            opacity: 0;
+            transform: translateY(40px);
+            animation: fadeInTitle 1.3s .6s cubic-bezier(.5, 1.8, .5, 1) forwards;
+            font-size: 1.45rem;
+        }
+
+        @keyframes fadeInTitle {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fadein-input,
+        .fadein-input-2,
+        .fadein-input-3,
+        .fadein-input-4,
+        .fadein-input-5 {
+            opacity: 0;
+            transform: translateY(22px);
+            animation: fadeinInput 0.9s 1.3s cubic-bezier(.5, 1.8, .5, 1) forwards;
+        }
+
+        .fadein-input-2 {
+            animation-delay: 1.44s;
+        }
+
+        .fadein-input-3 {
+            animation-delay: 1.58s;
+        }
+
+        .fadein-input-4 {
+            animation-delay: 1.72s;
+        }
+
+        .fadein-input-5 {
+            animation-delay: 1.86s;
+        }
+
+        @keyframes fadeinInput {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .btn-register {
+            background: linear-gradient(90deg, #796380 60%, #a78d94 100%);
+            color: #fff;
+            padding: 0.9rem 2.1rem;
+            border-radius: 9999px;
+            font-weight: 600;
+            font-size: 1.16rem;
+            box-shadow: 0 2px 22px #c4b3b475;
+            border: none;
+            outline: none;
+            margin-top: 32px;
+            opacity: 0;
+            transform: scale(0.97) translateY(10px);
+            animation: fadeinbtn 1s 2.08s cubic-bezier(.5, 1.8, .5, 1) forwards;
+            cursor: pointer;
+            transition: background 0.3s, box-shadow 0.3s, transform 0.15s;
+        }
+
+        @keyframes fadeinbtn {
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        .btn-register:hover {
+            background: linear-gradient(90deg, #a78d94 30%, #796380 100%);
+            box-shadow: 0 4px 32px #a78d9475;
+            transform: scale(1.04) translateY(-2px);
+        }
+
+        .input-fancy {
+            background: #edecee;
+            border: none;
+            height: 2.75rem;
+            border-radius: 1rem;
+            font-size: 1.05rem;
+            color: #151316;
+            margin-bottom: 4px;
+            padding: 0 1.1rem;
+            transition: box-shadow 0.25s, outline 0.25s, border-color 0.18s;
+            outline: none;
+        }
+
+        .input-fancy:focus {
+            box-shadow: 0 0 0 2px #b3c4bd;
+            background: #fff;
+        }
+
+        .input-error {
+            border: 1.5px solid #e25252 !important;
+            background: #f9eaea !important;
+            color: #a73333 !important;
+        }
+
+        .field-error {
+            color: #e25252;
+            min-height: 18px;
+            margin-bottom: 7px;
+            font-size: 0.97rem;
+        }
+
+        .error-msg {
+            color: #e25252;
+            min-height: 18px;
+            margin-top: 2px;
+            font-size: 0.97rem;
+            text-align: center;
+            letter-spacing: 0.01em;
+        }
+
+        .success-msg {
+            color: #24c174;
+            min-height: 18px;
+            margin-top: 2px;
+            font-size: 0.97rem;
+            text-align: center;
+        }
+
+        .login-link {
+            display: block;
+            margin-top: 18px;
+            color: #796380;
+            text-align: center;
+            font-size: 1.04rem;
+            text-decoration: none;
+            transition: color 0.2s;
+            opacity: 0;
+            animation: fadeinRegister 0.9s 2.25s cubic-bezier(.5, 1.8, .5, 1) forwards;
+        }
+
+        .login-link:hover {
+            color: #a78d94;
+            text-decoration: underline;
+        }
+
+        @keyframes fadeinRegister {
+            to {
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <main class="flex items-center justify-center min-h-screen">
+        <section class="register-section relative overflow-hidden">
+            <div class="scribbles-logo">
+                <img src="/static/img/scribbles.png" alt="Scribbles Logo">
+            </div>
+            <div class="gradient font-semibold mb-6">Create account</div>
+            <form id="register-form" style="width: 100%; max-width: 360px;" autocomplete="off">
+                <div>
+                    <input type="text" id="full_name" name="full_name" placeholder="Full name"
+                        class="input-fancy w-full fadein-input" required />
+                    <div id="full_name-error" class="field-error"></div>
+                </div>
+                <div>
+                    <input type="email" id="email" name="email" placeholder="Email"
+                        class="input-fancy w-full fadein-input-2" required />
+                    <div id="email-error" class="field-error"></div>
+                </div>
+                <div>
+                    <input type="tel" id="phone" name="phone" placeholder="+998 (__) ___-__-__"
+                        class="input-fancy w-full fadein-input-3" required maxlength="23" autocomplete="off" />
+                    <div id="phone-error" class="field-error"></div>
+                </div>
+                <div>
+                    <input type="text" id="nickname" name="nickname" placeholder="Nickname"
+                        class="input-fancy w-full fadein-input-4" required />
+                    <div id="nickname-error" class="field-error"></div>
+                </div>
+                <div>
+                    <input type="password" id="password" name="password" placeholder="Password"
+                        class="input-fancy w-full fadein-input-5" required minlength="6" />
+                    <div id="password-error" class="field-error"></div>
+                </div>
+                <div id="error-msg" class="error-msg"></div>
+                <button type="submit" class="btn-register w-full mt-2">
+                    Sign Up
+                </button>
+                <a href="/auth/login" class="login-link">Already registered? Log in</a>
+            </form>
+        </section>
+    </main>
+    <script>
+        function showFieldError(fieldId, message) {
+            const input = document.getElementById(fieldId);
+            const errorDiv = document.getElementById(fieldId + "-error");
+            input.classList.add("input-error");
+            errorDiv.textContent = message;
+        }
+        function clearFieldError(fieldId) {
+            const input = document.getElementById(fieldId);
+            const errorDiv = document.getElementById(fieldId + "-error");
+            input.classList.remove("input-error");
+            errorDiv.textContent = "";
+        }
+
+        ["full_name", "email", "phone", "nickname", "password"].forEach(field => {
+            document.getElementById(field).addEventListener("input", () => clearFieldError(field));
+        });
+
+        // Телефон — автодополнение и автоформатирование
+        const phoneInput = document.getElementById("phone");
+        phoneInput.value = "+998 ";
+        phoneInput.addEventListener("focus", function () {
+            if (this.value === "") this.value = "+998 ";
+        });
+        phoneInput.addEventListener("input", function (e) {
+            formatPhoneInput(this);
+            this.setSelectionRange(this.value.length, this.value.length);
+        });
+        phoneInput.addEventListener("keydown", function (e) {
+            // Запретить удаление +998
+            if ((this.selectionStart <= 5 && (e.key === "Backspace" || e.key === "Delete")) ||
+                (this.selectionStart === 0 && (e.key === "ArrowLeft" || e.key === "Backspace"))) {
+                e.preventDefault();
+            }
+        });
+        function formatPhoneInput(input) {
+            let value = input.value.replace(/\D/g, "");
+            if (value.startsWith("998")) value = value.slice(3);
+            value = value.substring(0, 9);
+            let formatted = "+998";
+            if (value.length > 0) formatted += " (" + value.substring(0, 2);
+            if (value.length >= 2) formatted += ") ";
+            if (value.length >= 5) formatted += value.substring(2, 5) + " - ";
+            else if (value.length > 2) formatted += value.substring(2, 5);
+            if (value.length >= 7) formatted += value.substring(5, 7) + " - ";
+            else if (value.length > 5) formatted += value.substring(5, 7);
+            if (value.length > 7) formatted += value.substring(7, 9);
+            input.value = formatted.trim();
+        }
+
+        // Отправка формы регистрации
+        document.getElementById("register-form").addEventListener("submit", async (e) => {
+            e.preventDefault();
+            let error = false;
+            ["full_name", "email", "phone", "nickname", "password"].forEach(field => clearFieldError(field));
+            document.getElementById("error-msg").textContent = "";
+            document.getElementById("error-msg").className = "error-msg";
+
+            const full_name = document.getElementById("full_name").value.trim();
+            const email = document.getElementById("email").value.trim();
+            const phone = document.getElementById("phone").value.replace(/\D/g, "");
+            const nickname = document.getElementById("nickname").value.trim();
+            const password = document.getElementById("password").value.trim();
+
+            if (!/^[A-Za-zА-Яа-я\s\-]+$/.test(full_name)) {
+                showFieldError("full_name", "Please enter a valid name.");
+                error = true;
+            }
+            if (!/^[\w\.\-]+@[\w\.\-]+\.\w+$/.test(email)) {
+                showFieldError("email", "Please enter a valid email.");
+                error = true;
+            }
+            if (phone.length !== 12 || !phone.startsWith("998")) {
+                showFieldError("phone", "Please enter a valid number.");
+                error = true;
+            }
+            if (!/^[A-Za-z0-9_\-\.]{3,}$/.test(nickname)) {
+                showFieldError("nickname", "Incorrect nickname (min. 3 characters, only Latin, numbers, _-.)");
+                error = true;
+            }
+            if (password.length < 6) {
+                showFieldError("password", "Minimum 6 characters..");
+                error = true;
+            }
+            if (error) return;
+
+            const body = { full_name, email, phone, nickname, password };
+
+            const response = await fetch("/auth/register", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(body),
+            });
+            const result = await response.json();
+
+            if (response.ok) {
+                document.getElementById("error-msg").className = "success-msg";
+                document.getElementById("error-msg").textContent = "Check your email and confirm your registration. Redirecting to login...";
+                setTimeout(() => { window.location.replace("/auth/login"); }, 3000);
+            } else if (result.detail) {
+                // Показываем ошибку у нужного поля
+                if (result.detail.toLowerCase().includes("email")) {
+                    showFieldError("email", result.detail);
+                } else if (result.detail.toLowerCase().includes("ник") || result.detail.toLowerCase().includes("nick")) {
+                    showFieldError("nickname", result.detail);
+                } else if (result.detail.toLowerCase().includes("phone") || result.detail.toLowerCase().includes("тел")) {
+                    showFieldError("phone", result.detail);
+                } else {
+                    document.getElementById("error-msg").className = "error-msg";
+                    document.getElementById("error-msg").textContent = result.detail || "Registration error";
+                }
+            } else {
+                document.getElementById("error-msg").className = "error-msg";
+                document.getElementById("error-msg").textContent = "Registration error";
+            }
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Разделы — Админка Scribbles</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <meta name="viewport" content="width=1280">
+    <style>
+        body {
+            font-family: Inter, "Noto Sans", sans-serif;
+        }
+    </style>
+</head>
+
+<body class="bg-white">
+    <div class="flex min-h-screen">
+        {% include "admin/partials/sidebar.html" %}
+        <div class="flex-1 p-10">
+            <h2 class="text-2xl font-semibold mb-6">Разделы</h2>
+            {% if error %}
+            <div id="custom-alert"
+                class="fixed top-5 left-1/2 z-50 transform -translate-x-1/2 w-full max-w-md bg-red-50 border border-red-300 text-red-700 px-6 py-4 rounded-xl shadow-lg flex items-center gap-2">
+                <i class="bi bi-exclamation-triangle text-2xl"></i>
+                <span>{{ error }}</span>
+                <button onclick="document.getElementById('custom-alert').remove()"
+                    class="ml-auto text-red-400 hover:text-red-700 text-2xl leading-none">&times;</button>
+            </div>
+            <script>
+                setTimeout(function () {
+                    var alert = document.getElementById('custom-alert');
+                    if (alert) { alert.remove(); }
+                }, 7000);
+            </script>
+            {% endif %}
+            <form method="post" action="/admin/sections/add"
+                class="mb-8 flex flex-col md:flex-row gap-4 items-end bg-[#f9f9fb] p-4 rounded-xl shadow-sm">
+                <div>
+                    <label class="block text-xs font-semibold mb-1">Название раздела</label>
+                    <input name="name" type="text" class="border rounded px-3 py-2 w-48" required>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold mb-1">Университет</label>
+                    <select name="university_id" class="border rounded px-3 py-2 w-48" required>
+                        <option value="">Выберите вуз</option>
+                        {% for u in universities %}
+                        <option value="{{ u.id }}">{{ u.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <button type="submit"
+                    class="bg-purple-700 hover:bg-purple-800 text-white rounded px-5 py-2 font-semibold flex items-center gap-2">
+                    <i class="bi bi-plus"></i> Добавить
+                </button>
+            </form>
+            <div class="overflow-x-auto">
+                <table class="min-w-full border rounded-xl bg-white">
+                    <thead>
+                        <tr class="bg-[#f0f2f5]">
+                            <th class="p-2 font-semibold text-left">ID</th>
+                            <th class="p-2 font-semibold text-left">Название</th>
+                            <th class="p-2 font-semibold text-left">Университет</th>
+                            <th class="p-2 font-semibold text-left">Действия</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for s in sections %}
+                        <tr class="border-b hover:bg-gray-50">
+                            <td class="p-2">{{ s.id }}</td>
+                            <td class="p-2">{{ s.name }}</td>
+                            <td class="p-2">{{ s.university.name if s.university else "" }}</td>
+                            <td class="p-2">
+                                <form method="post" action="/admin/sections/delete"
+                                    onsubmit="return confirm('Удалить раздел?');" style="display:inline;">
+                                    <input type="hidden" name="section_id" value="{{ s.id }}">
+                                    <button type="submit" class="text-red-600 hover:underline flex items-center gap-1">
+                                        <i class="bi bi-trash"></i> Удалить
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
